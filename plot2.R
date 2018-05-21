@@ -16,20 +16,9 @@ if(!file.exists("household_power_consumption.txt")){
 
 # read data
 dataSet <- read.table("household_power_consumption.txt", sep = ";", header = T, stringsAsFactors = F) #
-library(lubridate)
 dataSet <- subset(dataSet, Date == "1/2/2007" | Date == "2/2/2007")
-datetime <- dmy_hms(paste(dataSet[,1],dataSet[,2]))
-datetimeNumeric <- as.numeric(datetime)
-plot(datetimeNumeric, dataSet$Global_active_power, type = "s", xaxt='n', ylab = "Global Active Power (kilowatts)", xlab = "")
-pos1 <-  1
-pos2 <- length(datetimeNumeric)/2+1
-pos3 <- length(datetimeNumeric)
-
-label1 <- as.character(wday(datetime[pos1], label = T, abbr = T)) # Thu
-label2 <- as.character(wday(datetime[pos2], label = T, abbr = T)) # Fri
-label3 <- as.character(wday(datetime[pos3]+60, label = T, abbr = T)) # Sat
-
-axis(side = 1, at=c(datetimeNumeric[pos1], datetimeNumeric[pos2], datetimeNumeric[pos3]+60),labels=c(label1, label2, label3), col.axis="black", las=0)
+datetime <- strptime(paste(dataSet$Date, dataSet$Time, sep=" "), "%d/%m/%Y %H:%M:%S")
+plot(datetime, dataSet$Global_active_power, type = "s", ylab = "Global Active Power (kilowatts)", xlab = "")
 
 dev.copy(png, file = "plot2.png")
 dev.off()
